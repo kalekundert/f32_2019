@@ -1,0 +1,127 @@
+%% LyX 2.3.3 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[11pt]{article}
+\usepackage{fontspec}
+\usepackage{unicode-math}
+\setmainfont[Mapping=tex-text]{Tinos}
+\setsansfont[Mapping=tex-text]{Arimo}
+\setmonofont{Cousine}
+\usepackage[letterpaper]{geometry}
+\geometry{verbose,tmargin=0.5in,bmargin=0.5in,lmargin=0.5in,rmargin=0.5in}
+\pagestyle{empty}
+\usepackage[unicode=true,pdfusetitle,
+ bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,
+ breaklinks=false,pdfborder={0 0 0},pdfborderstyle={},backref=false,colorlinks=false]
+ {hyperref}
+\usepackage[bibstyle=numeric,citestyle=numeric-comp,backend=bibtex8,sorting=none,autocite=superscript]{biblatex}
+\addbibresource{references.bib}
+\renewcommand{\cite}{\autocite}
+\begin{document}
+Despite the growing promise of gene therapy, many applications remain
+out of reach because it is often difficult or impossible to make genome
+edits in enough cells to benefit patients therapeutically \cite{naldini2015}.
+A fundamental problem is that standard genome-editing technologies—based
+on the homology-directed repair (HDR) of double-stranded breaks created
+by a homing endonuclease like Cas9—are inefficient in most human cell
+types, where unwanted DNA damage responses such as apoptosis \cite{rich2000}
+and non-homologous end joining (NHEJ) \cite{lieber2010} are generally
+favored over HDR. This has led to the development of methods for either
+better inducing HDR \cite{richardson2016,maruyama2015,chu2015} or
+avoiding the need for HDR altogether \cite{molla2019,anzalone2019,strecker2019,klompe2019,suzuki2018}.
+In the latter category are methods that use tyrosine recombinases
+such as Cre and Flp to insert, delete, or invert genes at specific
+sites without relying on any host factors \cite{meinke2016}. The
+advantage of these methods is that they are far more efficient than
+any known alternative. Cre has been used extensively to make genome
+edits in a wide variety of mouse tissues in vivo, often with nearly
+100\% efficiency \cite{abram2014}, even when administered as gene
+therapy \cite{iwatate2003}. The disadvantage is that the cells being
+edited must already contain a target site for the recombinase. While
+it is possible to engineer recombinases that target potentially therapeutic
+sites in the human genome, doing so requires hundreds of rounds of
+directed evolution and a favorable target site \cite{sarkar2007,karpinski2016}.
+This difficulty has all but prevented recombinases from seeing use
+in human genome editing applications.
+
+The long-term goal of this proposal is to make it easier to change
+the target specificity of tyrosine recombinases, such that they become
+viable tools for human genome editing. I am proposing to approach
+this goal using computational protein design, with a more immediate
+goal of either identifying or developing algorithms that can reliably
+alter all kinds of DNA-binding proteins to bind non-native targets.
+ The motivation for using computational protein design is to complement
+the directed evolution approaches that have been used previously.
+The motivation for focusing on DNA-binding proteins in general, rather
+than recombinases exclusively, is to break a difficult design task
+into more manageable parts. Recombinases not only bind DNA, but then
+dimerize, tetramerize, undergo conformational change, and catalyze
+strand exchange \cite{meinke2016}. Most of these actions cannot yet
+be reliably modeled and designed, so trying to simultaneously account
+for all of them risks complete failure. A better approach is to iteratively
+develop reliable algorithms addressing each of these actions individually,
+until it is possible to engineer recombinases as desired. This proposal
+encompasses just the first step of the above approach—changing the
+target specificity of DNA-binding proteins—as detailed in the following
+aims:
+
+\paragraph*{Aim 1: Identify robust algorithms for protein/DNA interface design}
+
+To rigorously compare different protein design algorithms, it is necessary
+to have an assay capable of evaluating libraries of tens or hundreds
+of thousands of designs \cite{rocklin2017}. Designs meant to bind
+DNA can be evaluated for both affinity and specificity. Measuring
+the latter requires each design to be tested against a library of
+potential targets, leading to billions of combinations. I am proposing
+to develop an assay based on in vitro DNA display \cite{naimuddin2016,odegrip2004,bertschinger2004,stein2007}
+and next-generation sequencing (NGS) capable of making this many measurements.
+Briefly, each designed protein will be expressed and linked to a DNA
+molecule containing a potential target site upstream of an identifying
+barcode. The linked proteins will then be treated with exonuclease,
+such that only the barcodes protected by binding of the linked protein
+to the upstream target will remain to be identified by NGS.
+
+I will use the above assay to compare both existing and newly-developed
+algorithms for designing DNA interfaces. There is a need to better
+characterize the existing algorithms \cite{ashworth2006,thyme2009,ashworth2010,ulge2011},
+because so far they have (i) only been applied to meganuclease scaffolds, (ii) only been used to effect 1–3 bp changes in specificity, and
+(iii) only been tested experimentally on tens of designs. There is
+also a need to develop new algorithms, to more explicitly account
+for the fact the protein/DNA interfaces are highly polar and highly
+solvated. I will use the HBNet algorithm \cite{boyken2016,maguire2018}
+to force the formation of large H-bond networks during design, and
+I will create solvated nucleotide rotamers to model the insertion
+and removal of water from the interface more efficiently than either
+explicit water or solvated amino acid rotamers \cite{jiang2005}.
+Together, I anticipate that these algorithms will improve on the state
+of the art in protein/DNA interface design.
+
+\paragraph*{Aim 2: Design recombinases to specifically act on disease-relevant
+targets}
+
+Although I would ultimately like to be able to engineer recombinases
+to target any sequence, I will focus my initial efforts on an easier
+task: making variants of Cre specific for safe-harbor sites in the
+human genome that are already off-targets of wildtype Cre. To identify
+such sites, I will adapt the GUIDE-seq method \cite{tsai2015} to
+detect all off-target insertions made by Cre, then rank the resulting
+sites using criteria for predicting safe-harbors \cite{papapetrou2016}.
+To efficiently and specifically target the chosen sites, I will use
+use every available DNA interface design algorithm to make tens or
+hundreds of thousands of Cre variants, with more variants devoted
+to the more robust algorithms as judged in the previous aim. To determine
+which of these variants are functional, I will use a high-throughput
+assay in which oligonucleotide pool DNA synthesis is used to create
+cassettes containing both a recombinase variant and a target site,
+such that recombinase activity can be detected by NGS. This assay
+was recently developed by another member of the lab, but has not yet
+been published. If any functional variants are found, I will rigorously
+characterize their specificity in the context of the human genome
+using the adapted GUIDE-seq method mentioned above. This characterization
+may also provide additional safe-harbor sites to focus on in subsequent
+rounds of design. If this aim is successful, it will result in one
+or more enzymes that can be used to insert large transgenes with excellent
+efficiency at defined sites in the human genome.
+
+\printbibliography
+
+\end{document}
